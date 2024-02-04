@@ -8,6 +8,7 @@
 #include <string>
 
 #include "src/tokeniser/Tokeniser.hpp"
+#include "src/assembler/Assembler.hpp"
 
 int main(int argc, char const *argv[])
 {
@@ -21,7 +22,10 @@ int main(int argc, char const *argv[])
     Tokeniser tokeniser(file_path);
     tokeniser.tokenise();
 
-    tokeniser.printTokens();
+    // tokeniser.printTokens();
+
+    Assembler assembler(tokeniser.getTokens(), file_path);
+    assembler.assemble();
 
     return 0;
 }
