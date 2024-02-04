@@ -23,39 +23,54 @@ void Tokeniser::tokenise()
         std::vector<std::string> lineTokens = Utils::split(line, " ");
         std::string opcode = lineTokens[0];
 
-        // store opcode token
-        _tokens.push_back(opcode);
-
-        // store other tokens
-        if (opcode == "PUSH") {
+        // store tokens
+        // if the opcode end with a ':', it's an etiquette
+        if (opcode.back() == ':') {
+            std::string etiquette = opcode;
+            _tokens.push_back(std::make_shared<TokenEtiquette>(etiquette));
+            continue;
+        } else if (opcode == "HALT") {
+            _tokens.push_back(std::make_shared<TokenInstruction>(Tokens::HALT));
+        } else if (opcode == "PUSH") {
             if (lineTokens.size() != 2) {
                 std::cerr << "Error: PUSH opcode must have 1 argument" << std::endl;
                 return;
             }
+            _tokens.push_back(std::make_shared<TokenInstruction>(Tokens::PUSH));
             int value = std::stoi(lineTokens[1]);
-            _tokens.push_back(value);
+            _tokens.push_back(std::make_shared<TokenValue>(value));
+        } else if (opcode == "POP") {
+            _tokens.push_back(std::make_shared<TokenInstruction>(Tokens::POP));
+        } else if (opcode == "ADD") {
+            _tokens.push_back(std::make_shared<TokenInstruction>(Tokens::ADD));
+        } else if (opcode == "SUB") {
+            _tokens.push_back(std::make_shared<TokenInstruction>(Tokens::SUB));
+        } else if (opcode == "READ") {
+            _tokens.push_back(std::make_shared<TokenInstruction>(Tokens::READ));
         } else if (opcode == "PRINT") {
             if (lineTokens.size() == 1) {
                 std::cerr << "Error: PRINT opcode must have 0 argument" << std::endl;
                 return;
             }
-            // parse the string literal
+            _tokens.push_back(std::make_shared<TokenInstruction>(Tokens::PRINT));
             std::string string_literal = Utils::join(std::vector<std::string>(lineTokens.begin() + 1, lineTokens.end()), " ");
-            _tokens.push_back(string_literal.substr(1, string_literal.size() - 2));
+            _tokens.push_back(std::make_shared<TokenValue>(string_literal.substr(1, string_literal.size() - 2)));
         } else if (opcode == "JUMP.EQ.0") {
             if (lineTokens.size() != 2) {
                 std::cerr << "Error: JUMP.EQ.0 opcode must have 1 argument" << std::endl;
                 return;
             }
+            _tokens.push_back(std::make_shared<TokenInstruction>(Tokens::JUMP_EQ_0));
             std::string etiquette = lineTokens[1];
-            _tokens.push_back(etiquette);
+            _tokens.push_back(std::make_shared<TokenEtiquette>(etiquette));
         } else if (opcode == "JUMP.GT.0") {
             if (lineTokens.size() != 2) {
                 std::cerr << "Error: JUMP.GT.0 opcode must have 1 argument" << std::endl;
                 return;
             }
+            _tokens.push_back(std::make_shared<TokenInstruction>(Tokens::JUMP_GT_0));
             std::string etiquette = lineTokens[1];
-            _tokens.push_back(etiquette);
+            _tokens.push_back(std::make_shared<TokenEtiquette>(etiquette));
         }
     }
 }
@@ -68,11 +83,7 @@ void Tokeniser::printTokens() const
             std::cout << "', '";
         }
 
-        if (it->type() == typeid(std::string)) {
-            std::cout << std::any_cast<std::string>(*it);
-        } else if (it->type() == typeid(int)) {
-            std::cout << std::any_cast<int>(*it);
-        }
+        (*it)->print();
     }
     std::cout << "']" << std::endl;
 }

@@ -12,8 +12,10 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <memory>
 
-#include "..//utils/Utils.hpp"
+#include "../tokens.hpp"
+#include "../utils/Utils.hpp"
 
 class Tokeniser {
     public:
@@ -22,14 +24,14 @@ class Tokeniser {
 
         void tokenise();
 
-        inline std::vector<std::any> getTokens() const { return _tokens; }
+        inline std::vector<std::shared_ptr<Token>> getTokens() const { return _tokens; }
 
         void printTokens() const;
 
     protected:
     private:
         std::string _filePath;
-        std::vector<std::any> _tokens;
+        std::vector<std::shared_ptr<Token>> _tokens;
 
         std::vector<std::string> _programLines;
 };
