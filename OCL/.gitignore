@@ -4,7 +4,7 @@ build/
 bin_tests/
 build_tests/
 sujet.txt
-oil
+ocl
 .vscode/
 Logs/
 *.asm
