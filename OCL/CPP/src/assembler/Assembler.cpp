@@ -124,19 +124,6 @@ void Assembler::writeCustomText()
     _asmFile << "\tsub rsp, 32" << std::endl << std::endl;
     _asmFile << "; -- Program start --" << std::endl;
 
-    // for (size_t i = 0; i < _tokens.size(); i++) {
-    //     Tokens tokenType = _tokens[i]->getType();
-
-    //     if (tokenType == Tokens::ETIQUETTE) {
-    //         _asmFile << std::endl << "; -- ETIQUETTE --" << std::endl;
-    //         TokenEtiquette *tokenEtiquette = dynamic_cast<TokenEtiquette *>(_tokens[i].get());
-    //         _asmFile << tokenEtiquette->getEtiquette() << std::endl;
-    //     } else if (tokenType == Tokens::PUSH) {
-    //         i++;
-    //         int value = dynamic_cast<TokenValue *>(_tokens[i + 1].get())->getIntValue();
-    //     }
-    // }
-
     while (1) {
         Token *token = getNextToken();
         if (token == nullptr) {
