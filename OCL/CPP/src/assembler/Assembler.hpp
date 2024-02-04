@@ -45,4 +45,5 @@ class Assembler {
         void writeData();
         void writeDefaultText();
         void writeCustomText();
+        void writeEndProgram();
 };

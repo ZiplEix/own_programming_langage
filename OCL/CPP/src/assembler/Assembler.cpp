@@ -17,13 +17,6 @@ Assembler::Assembler(std::vector<std::shared_ptr<Token>> tokens, std::string fil
 
 Assembler::~Assembler()
 {
-    _asmFile << "; -- EXIT ETIQUETTE --" << std::endl;
-    _asmFile << "_exit_etiquette:" << std::endl;
-    _asmFile << "\tmov rax, 60 ; 60 is the syscall number for exit" << std::endl;
-    _asmFile << "\txor edi, edi ; 0 as return code" << std::endl;
-    _asmFile << "\tsyscall" << std::endl << std::endl;
-
-    _asmFile.close();
 }
 
 void Assembler::assemble()
@@ -39,6 +32,19 @@ void Assembler::assemble()
     writeData();
     writeDefaultText();
     writeCustomText();
+    writeEndProgram();
+
+    _asmFile.close();
+
+    // use nasm to compile the assembly file
+    std::string command = "nasm -f elf64 " + _asmPath;
+    system(command.c_str());
+
+    // use ld to link the object file
+    std::string objectPath = _asmPath.substr(0, _asmPath.find_last_of('.')) + ".o";
+    std::string executablePath = _asmPath.substr(0, _asmPath.find_last_of('.'));
+    command = "ld " + objectPath + " -o " + executablePath;
+    system(command.c_str());
 }
 
 Token *Assembler::getNextToken()
@@ -191,4 +197,13 @@ void Assembler::writeCustomText()
     }
 
     _asmFile << "; -- Program end --" << std::endl << std::endl;
+}
+
+void Assembler::writeEndProgram()
+{
+    _asmFile << "; -- EXIT ETIQUETTE --" << std::endl;
+    _asmFile << "_exit_etiquette:" << std::endl;
+    _asmFile << "\tmov rax, 60 ; 60 is the syscall number for exit" << std::endl;
+    _asmFile << "\txor edi, edi ; 0 as return code" << std::endl;
+    _asmFile << "\tsyscall" << std::endl << std::endl;
 }
