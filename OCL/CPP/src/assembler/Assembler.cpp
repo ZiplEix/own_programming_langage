@@ -72,7 +72,7 @@ void Assembler::writeHeader()
 
 void Assembler::writeBss()
 {
-    _asmFile << "; -- bss --" << std::endl;
+    _asmFile << "; -- bss section --" << std::endl;
     _asmFile << "section .bss" << std::endl;
     _asmFile << "input_buffer resb 16 ; reserve 16 bytes for the input buffer" << std::endl << std::endl;
 }
