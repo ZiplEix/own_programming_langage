@@ -23,7 +23,6 @@ class Tokeniser {
         void tokenise();
 
         inline std::vector<std::any> getTokens() const { return _tokens; }
-        // inline std::map<std::string, unsigned int> getEtiquetteTracker() const { return etiquetteTracker; }
 
         void printTokens() const;
 
@@ -31,8 +30,6 @@ class Tokeniser {
     private:
         std::string _filePath;
         std::vector<std::any> _tokens;
-        // unsigned int _tokenCounter;
-        // std::map<std::string, unsigned int> etiquetteTracker;
 
         std::vector<std::string> _programLines;
 };
