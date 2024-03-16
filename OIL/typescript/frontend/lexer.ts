@@ -1,22 +1,29 @@
 // let x = 45 + ( foo * bat )
 // [ LetToken, IdentifierTk, EqualToken, NumberToken]
 
-import * as fs from 'fs';
-
 export enum TokenType {
     // Lieral Types
-    NULL,
     NUMBER,
     IDENTIFIER,
 
     // Punctuation
-    EQUALS,
-    OPEN_PAREN,
-    CLOSE_PAREN,
-    BINARY_OPERATOR,
+    SEMI_COLUMN, // ;
+    EQUALS, // =
+    COMMA, // ,
+    DOT, // .
+    COLON, // :
+    OPEN_PAREN, // (
+    CLOSE_PAREN, // )
+    OPEN_BRACE, // {
+    CLOSE_BRACE, // }
+    OPEN_BRACKET, // [
+    CLOSE_BRACKET, // ]
+    BINARY_OPERATOR, // +, -, *, /, %
 
     // Keywords
     LET,
+    CONST,
+    FUNCTION,
 
     // End of file
     EOF,
@@ -24,7 +31,8 @@ export enum TokenType {
 
 const KEYWORDS: Record<string, TokenType> = {
     "let": TokenType.LET,
-    null: TokenType.NULL,
+    "const": TokenType.CONST,
+    "function": TokenType.FUNCTION,
 };
 
 export interface Token {
@@ -47,7 +55,7 @@ function isInt(str: string): boolean {
 }
 
 function isWhitespace(str: string): boolean {
-    return str == ' ' || str == '\n' || str == '\t';
+    return str == ' ' || str == '\n' || str == '\t' || str == '\r';
 }
 
 export function tokenize(sourceCode: string): Token[] {
@@ -56,15 +64,47 @@ export function tokenize(sourceCode: string): Token[] {
 
     // build each token until end of file
     while (src.length > 0) {
+        // ONE CHARACTER TOKENS
         if (src[0] == '(') {
             tokens.push(token(src.shift(), TokenType.OPEN_PAREN))
-        } else if (src[0] == ')') {
+        }
+        else if (src[0] == ')') {
             tokens.push(token(src.shift(), TokenType.CLOSE_PAREN))
-        } else if (src[0] == '+' || src[0] == '-' || src[0] == '*' || src[0] == '/' || src[0] == '%') {
+        }
+        else if (src[0] == '{') {
+            tokens.push(token(src.shift(), TokenType.OPEN_BRACE))
+        }
+        else if (src[0] == '}') {
+            tokens.push(token(src.shift(), TokenType.CLOSE_BRACE))
+        }
+        else if (src[0] == '[') {
+            tokens.push(token(src.shift(), TokenType.OPEN_BRACKET))
+        }
+        else if (src[0] == ']') {
+            tokens.push(token(src.shift(), TokenType.CLOSE_BRACKET))
+        }
+        // HANDLE BINARIES OPERATORS
+        else if (src[0] == '+' || src[0] == '-' || src[0] == '*' || src[0] == '/' || src[0] == '%') {
             tokens.push(token(src.shift(), TokenType.BINARY_OPERATOR))
-        } else if (src[0] == '=') {
+        }
+        // HANDLE CONDITIONAL AND ASSIGNMENT TOKENS
+        else if (src[0] == '=') {
             tokens.push(token(src.shift(), TokenType.EQUALS))
-        } else {
+        }
+        else if (src[0] == ';') {
+            tokens.push(token(src.shift(), TokenType.SEMI_COLUMN))
+        }
+        else if (src[0] == ':') {
+            tokens.push(token(src.shift(), TokenType.COLON))
+        }
+        else if (src[0] == ',') {
+            tokens.push(token(src.shift(), TokenType.COMMA))
+        }
+        else if (src[0] == '.') {
+            tokens.push(token(src.shift(), TokenType.DOT))
+        }
+        // HANDLE MULTI-CHARACTER KEYWORDS, TOKENS, IDENTIFIERS, ETC...
+        else {
             // Handle multi-character tokens
 
             // build number token

@@ -1,7 +1,18 @@
 export type NodeType =
+    // STATEMENTS
     | "Program"
+    | "variableDeclaration"
+    | "FunctionDeclaration"
+
+    // EXPRESSIONS
+    | "AssignmentExpr"
+    | "MemberExpr"
+    | "CallExpr"
+
+    // LITERALS
+    | "Property"
+    | "ObjectLiteral"
     | "NumericLiteral"
-    | "NullLiteral"
     | "Identifier"
     | "BinaryExpr"
 
@@ -22,10 +33,30 @@ export interface Program extends Stmt {
     body: Stmt[]
 }
 
+export interface VariableDeclaration extends Stmt {
+    kind: "variableDeclaration"
+    constant: boolean,
+    identifier: string,
+    value?: Expr
+}
+
+export interface FunctionDeclaration extends Stmt {
+    kind: "FunctionDeclaration"
+    name: string,
+    params: string[],
+    body: Stmt[]
+}
+
 /**
  * Expression will result in a value at runtime unlike statements
  */
 export interface Expr extends Stmt {}
+
+export interface AssignmentExpr extends Expr {
+    kind: "AssignmentExpr"
+    assigne: Expr,
+    value: Expr
+}
 
 /**
  * An operation with two side separated by an operator
@@ -37,6 +68,21 @@ export interface BinaryExpr extends Expr {
     left: Expr
     right: Expr
     operator: string
+}
+
+
+export interface CallExpr extends Expr {
+    kind: "CallExpr"
+    args: Expr[]
+    caller: Expr
+}
+
+
+export interface MemberExpr extends Expr {
+    kind: "MemberExpr"
+    object: Expr
+    property: Expr
+    computed: boolean
 }
 
 // PRIMARY EXPRESSIONS TYPES
@@ -57,10 +103,15 @@ export interface NumericLiteral extends Expr {
     value: number
 }
 
-/**
- * Represent a null value
- */
-export interface NullLiteral extends Expr {
-    kind: "NullLiteral"
-    value: "null"
+
+export interface Property extends Expr {
+    kind: "Property"
+    key: string
+    value?: Expr
+}
+
+
+export interface ObjectLiteral extends Expr {
+    kind: "ObjectLiteral"
+    properties: Property[]
 }

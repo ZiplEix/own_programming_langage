@@ -1,1 +1,13 @@
-let x = 45 * (4 / 3)
+function makeAdder(offset) {
+    function add(x, y) {
+        x + y + offset
+    }
+
+    add
+}
+
+const adder = makeAdder(10);
+
+print(adder)
+
+print(adder(5, 2))
